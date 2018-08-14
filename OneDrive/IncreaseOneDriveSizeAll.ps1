@@ -1,4 +1,4 @@
-# Increase the size of specific users' OneDrive for Business accounts
+# Increase the size of all users' OneDrive for Business accounts
 #
 # Requires the Sharepoint Online PowerShell module to be installed
 #
