@@ -12,7 +12,7 @@ $spoServiceURL = 'https://' + $orgName + '-admin.sharepoint.com'
 Import-Module 'C:\Program Files\SharePoint Online Management Shell\Microsoft.Online.SharePoint.PowerShell' -DisableNameChecking
 Connect-SPOService -Url $spoServiceURL
 
-# Create the base URL for OneDrive for Business
+# Create the common base URL for OneDrive for Business
 $spoBaseWildcard = 'https://' + $orgName + '-my.sharepoint.com/personal/*'
 
 # Get a list of all 'personal' sites (e.g.: OneDrive for Business sites) within the tenant
