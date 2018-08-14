@@ -29,9 +29,9 @@ foreach ($userUPN in $userList) {
     $spoURL = $spoBaseURL + ($userUPN.ToLower() -replace "[@.]", "_")
     try {
         $currentBytes = (Get-SPOSite -Identity $spoURL -ErrorAction:Stop).StorageQuota
-        if ($currentBytes -ne $newBytes) {
+        if ($currentBytes -gt $newBytes) {
             try {
-                Set-SPOSite -Identity $spoURL -StorageQuota $newBytes -ErrorAction:Stop -WhatIf
+                Set-SPOSite -Identity $spoURL -StorageQuota $newBytes -ErrorAction:Stop
                 Write-Output -InputObject ('Updated OneDrive account limit for ' + $userUPN + ' to ' + $newSize + 'TB.')
             }
             catch {
@@ -39,7 +39,7 @@ foreach ($userUPN in $userList) {
             }
         }
         else {
-            Write-Output -InputObject ('Updated OneDrive account limit for ' + $userUPN + ' to ' + $newSize + 'TB.')
+            Write-Output -InputObject ('OneDrive account limit for ' + $userUPN + ' already equal to or higher than ' + $newSize + 'TB.')
         }
     }
     catch {
