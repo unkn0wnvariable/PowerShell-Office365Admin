@@ -7,6 +7,7 @@ $adUsername = Read-Host -Prompt 'Enter username for AD account'
 $msolIncorrectUPN = Read-Host -Prompt 'Enter UPN for the duplicate object in MSOL'
 
 # Connect to MS Online
+Import-Module MSOnline
 Connect-MsolService
 
 # Get AD user account
