@@ -2,9 +2,9 @@
 
 ## What is this?
 
-Connecting to Exchange Online through a remote PowerShell session doesn't work when using multi factor authentication. You can (apparrently) get round that by creating an application password, but in my mind creating a password to bypass MFA somewhat defeates the point of enabling MFA in the first place.
+Connecting to Exchange Online through a remote PowerShell session doesn't work when using multi factor authentication. You can (apparrently) get round that by creating an application password, but I've never got it to work and in my mind creating a password to bypass MFA somewhat defeates the point of enabling MFA in the first place.
 
-There is a new module available which does support MFA, so this folder is where I'll be putting new scripts that support MFA or old scripts as I update them.
+There now is a new "module" available which does support MFA, so this folder is where I'll be putting new scripts that support MFA or old scripts as I update them.
 
 ## Pre-requisites
 
