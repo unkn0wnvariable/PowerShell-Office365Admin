@@ -3,13 +3,20 @@
 # Uses the new PowerShell "module" that support MFA.
 #
 
-# Details of New Room
+# New room name and alias
 $displayName = ''
 $mailboxAlias = ''
+
+# How many people can the room take?
 $roomCapacity = ''
 
-# Room list to add the room to
+# Do you want meeting requests to be auto accepted?
+$requestAutoAccept = $true
+
+# Do we want to add the room to a room list?
 $addToRoomList = $true
+
+# What is the room list called? (Will be created if it doesn't exist)
 $roomList = ''
 
 # Find and load the new ExO "module"
@@ -22,10 +29,18 @@ Connect-EXOPSSession
 # Create the new room mailbox
 New-Mailbox -Room -Alias $mailboxAlias -Name $displayName -DisplayName $displayName -ResourceCapacity $roomCapacity
 
+# Wait for the meeting room mailbox to process
+Start-Sleep -Seconds 30
+
+# Set the mailbox calendar to auto accept meeting requests (assuming policies are met)
+if ($requestAutoAccept) {
+    Set-CalendarProcessing $mailboxAlias -AutomateProcessing AutoAccept
+}
+
 # If we're adding the room to a room list, then do that.
 if ($addToRoomList) {
     # If the room list doesn't exist, create it.
-    if (!(Get-DistributionGroup -Identity $roomList)) {
+    if (!(Get-DistributionGroup -Identity $roomList -ErrorAction SilentlyContinue)) {
         New-DistributionGroup -Name $roomList -RoomList
     }
 
