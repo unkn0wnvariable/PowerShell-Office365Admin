@@ -47,3 +47,6 @@ if ($addToRoomList) {
     # Add the room to the list
     Add-DistributionGroupMember -Identity $roomList -Member $mailboxAlias
 }
+
+# End the Exchange Session
+Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession

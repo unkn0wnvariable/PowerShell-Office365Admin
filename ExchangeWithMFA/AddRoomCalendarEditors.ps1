@@ -37,3 +37,6 @@ foreach ($roomMailbox in $roomMailboxes) {
     $calendarFolder = $mailboxAlias + ':\calendar'
     Add-MailboxFolderPermission -Identity $calendarFolder -User $editorsGroup  -AccessRights Editor
 }
+
+# End the Exchange Session
+Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession
