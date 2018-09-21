@@ -3,17 +3,12 @@
 # This is a rewrite of a script from https://github.com/OfficeDev/O365-InvestigationTooling
 #
 
+# Find and load the new ExO "module"
+$exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
+. "$exoModulePath\CreateExoPSSession.ps1"
+
 # Establish a session to Exchange Online
-$credentials = Get-Credential -Message 'Enter your Exchange Online administrator credentials'
-$connectionParams = @{
-    'ConfigurationName' = 'Microsoft.Exchange';
-    'ConnectionUri' = 'https://outlook.office365.com/powershell-liveid/';
-    'Credential' = $credentials;
-    'Authentication' = 'Basic';
-    'AllowRedirection' = $true
-} 
-$exchangeSession = New-PSSession @connectionParams
-Import-PSSession -Session $exchangeSession
+Connect-EXOPSSession
 
 # Set Auditing parameters
 $params = @{
@@ -28,7 +23,7 @@ $params = @{
 Get-Mailbox -ResultSize Unlimited | Where-Object {$_.RecipientTypeDetails -match '(User|Shared|Room|Discovery)Mailbox' -and $_.AuditEnabled -eq $false} | Set-Mailbox @params
 
 # Check Auditing
-Get-Mailbox -ResultSize Unlimited | Select-Object UserPrincipalName,RecipientTypeDetails,AuditEnabled,AuditLogAgeLimit | Format-Table -AutoSize
+Get-Mailbox -ResultSize Unlimited | Where-Object {$_.RecipientTypeDetails -match '(User|Shared|Room|Discovery)Mailbox'} | Format-Table -AutoSize UserPrincipalName,RecipientTypeDetails,AuditEnabled,AuditLogAgeLimit
 
 # Disconnect from Exchange Online
 Remove-PSSession $exchangeSession
