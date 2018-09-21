@@ -25,5 +25,5 @@ Get-Mailbox -ResultSize Unlimited | Where-Object {$_.RecipientTypeDetails -match
 # Check Auditing
 Get-Mailbox -ResultSize Unlimited | Where-Object {$_.RecipientTypeDetails -match '(User|Shared|Room|Discovery)Mailbox'} | Format-Table -AutoSize UserPrincipalName,RecipientTypeDetails,AuditEnabled,AuditLogAgeLimit
 
-# Disconnect from Exchange Online
-Remove-PSSession $exchangeSession
+# End the Exchange Session
+Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession
