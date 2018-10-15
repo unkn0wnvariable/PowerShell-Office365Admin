@@ -4,10 +4,10 @@
 #
 
 # What do you want the editors group to be called?
-$editorsGroup = 'From79 Calendar Editors'
+$editorsGroup = 'Calendar Editors'
 
-# Who do you want to be in the group?
-$editorsMembers = @('oandrews','oandrewsadmin')
+# Who do you want to be in the group? This can be 1 or more people.
+$editorsMembers = @('','')
 
 # Find and load the new ExO "module"
 $exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
