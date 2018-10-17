@@ -13,7 +13,7 @@ $licenceToAdd = ''
 Import-Module MSOnline
 Connect-MsolService
 
-# Find everyone who has the existing licence but not the new one
+# Find everyone who has the existing
 $users = Get-MsolUser -All | Where-Object {($_.licenses).AccountSkuId -match $existingLicence -and !(($_.licenses).AccountSkuId -match $licenceToAdd)}
 
 # Add the new licence
