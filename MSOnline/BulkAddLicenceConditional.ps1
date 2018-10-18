@@ -1,4 +1,4 @@
-# Bulk Add a new licence to users on the basis of what licence they currently have
+# Bulk add a new licence to users on the basis of what licence they currently have
 #
 # This is useful for something like adding Office 365 ATP to everyone who currently has E3, for example.
 #
