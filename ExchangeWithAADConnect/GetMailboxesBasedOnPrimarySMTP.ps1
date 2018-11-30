@@ -22,7 +22,7 @@ Import-PSSession $Session -DisableNameChecking
 $allMailboxes = Get-RemoteMailbox -ResultSize Unlimited | Where-Object {($_.PrimarySmtpAddress.Split('@')[1] -eq $primarySMTP)}
 
 # Export results to CSV file
-$allMailboxes | Select-Object Name,Alias,UserPrincipalName,PrimarySmtpAddress,EmailAddresses,RemoteRecipientType | Export-Csv -Path $outputFile -NoTypeInformation
+$allMailboxes | Select-Object Name,Alias,UserPrincipalName,PrimarySmtpAddress,EmailAddresses | Export-Csv -Path $outputFile -NoTypeInformation
 
 # End the Exchange Session
 Remove-PSSession -Session $Session
