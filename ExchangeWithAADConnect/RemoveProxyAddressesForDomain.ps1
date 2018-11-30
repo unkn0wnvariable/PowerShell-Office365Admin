@@ -1,4 +1,4 @@
-# Script to bulk remove email aliases from Exchange users in a synced environment using an on-prem Exchange management server
+# Script to bulk remove email proxy addresses from Exchange users in a synced environment using an on-prem Exchange management server
 #
 
 # What is the FQDN of the on-prem Exchange server?
