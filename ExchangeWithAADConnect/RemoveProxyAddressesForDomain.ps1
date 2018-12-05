@@ -28,7 +28,8 @@ foreach ($domainToRemove in $domainsToRemove) {
     foreach ($mailbox in $affectedMailboxes) {
         $redundantAddresses = (($mailbox.EmailAddresses -split ',' | Where-Object {$_ -like ('*' + $domainToRemove + '*')}) -replace 'smtp:','')
         foreach ($emailToRemove in $redundantAddresses) {
-            Set-RemoteMailbox -Identity $mailbox.Identity -EmailAddresses @{remove=$emailToRemove} -Confirm:$false -WhatIf
+            Write-Output -InputObject ('Removing address ' + $emailToRemove + ' from maibox ' + $mailbox.Name)
+            Set-RemoteMailbox -Identity $mailbox.Identity -EmailAddresses @{remove=$emailToRemove} -Confirm:$false
         }
     }
 }
@@ -48,7 +49,8 @@ foreach ($domainToRemove in $domainsToRemove) {
     foreach ($contact in $affectedContacts) {
         $redundantAddresses = (($contact.EmailAddresses -split ',' | Where-Object {$_ -like ('*' + $domainToRemove + '*')}) -replace 'smtp:','')
         foreach ($emailToRemove in $redundantAddresses) {
-            Set-MailContact -Identity $contact.Identity -EmailAddresses @{remove=$emailToRemove} -Confirm:$false -ForceUpgrade:$true -WhatIf
+            Write-Output -InputObject ('Removing address ' + $emailToRemove + ' from contact ' + $contact.Name)
+            Set-MailContact -Identity $contact.Identity -EmailAddresses @{remove=$emailToRemove} -Confirm:$false -ForceUpgrade:$true
         }
     }
 }
@@ -68,7 +70,8 @@ foreach ($domainToRemove in $domainsToRemove) {
     foreach ($group in $affectedGroups) {
         $redundantAddresses = (($group.EmailAddresses -split ',' | Where-Object {$_ -like ('*' + $domainToRemove + '*')}) -replace 'smtp:','')
         foreach ($emailToRemove in $redundantAddresses) {
-            Set-DistributionGroup -Identity $group.Identity -EmailAddresses @{remove=$emailToRemove} -Confirm:$false -WhatIf
+            Write-Output -InputObject ('Removing address ' + $emailToRemove + ' from group ' + $group.Name)
+            Set-DistributionGroup -Identity $group.Identity -EmailAddresses @{remove=$emailToRemove} -Confirm:$false
         }
     }
 }
