@@ -3,7 +3,7 @@
 
 # This is the name of your tenant, as shown in the URL when accessing SharePoint online
 # E.g.: https://<tenant-name>.sharepoint.com/
-$spoTenantName = 'satelliteinfo'
+$spoTenantName = ''
 
 # Create the admin URL from the tenant name
 $spoAdminUrl = 'https://' + $spoTenantName + '-admin.sharepoint.com'
