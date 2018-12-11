@@ -6,7 +6,7 @@
 # Where to save the CSV files to
 $outputPath = 'C:\Temp\'
 
-# Wildcard for groups to find
+# Wildcard for mailboxes to find
 $searchWildcard = '*'
 
 # Find and load the new ExO "module"
