@@ -5,15 +5,48 @@
 $exchangeServerFQDN = ''
 
 # Which domains are we removing?
-$domainsToRemove = @('','')
+$domainToRemove = @('','')
 
 # Create Exchange connection Uri from FQDN
 $exchangeConnectionUri = 'http://' + $exchangeServerFQDN +'/PowerShell/'
 
 # Establish a session to Exchange
-$UserCredential = Get-Credential
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $exchangeConnectionUri -Authentication Kerberos -Credential $UserCredential
-Import-PSSession $Session -DisableNameChecking
+$userCredential = Get-Credential
+$session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $exchangeConnectionUri -Authentication Kerberos -Credential $userCredential
+Import-PSSession $session -DisableNameChecking
+
+### Check if address policies are using this domain ###
+
+# Initialise a hastable to store our results in
+$addressPolicies = @()
+
+# Get all address policies from Exchange
+$allAddressPolicies = Get-EmailAddressPolicy
+
+# Run through the domains checking if the domain to be removed is in the address policies
+foreach ($domainToRemove in $domainsToRemove) {
+    $emailAddressTemplate = 'SMTP:@' + $domainToRemove
+    $addressPolicies += $allAddressPolicies | Where-Object {$_.EnabledEmailAddressTemplates -contains $emailAddressTemplate}
+}
+
+# If domain found in address policies then list them and ask if we want to contiue removing the proxy domain
+if ($addressPolicies.Count -gt 0) {
+    Write-Output -InputObject ('The following address policies are using the domain to be removed:')
+    $addressPolicies | Format-Table
+    $continue = ''
+    while ($continue -notmatch '[YyNn]') {
+        $continue = Read-Host -Prompt 'Do you want to continue running the script? (Y/N)'
+    }
+    if ($continue -match '[Nn]') {
+        Write-Output -InputObject ('Terminating script.')
+        break
+    }
+    else {
+        Write-Output -InputObject ('Continuing with script.')
+    }
+}
+
+###
 
 ### Remove the domain from mailboxes ###
 
@@ -79,4 +112,4 @@ foreach ($domainToRemove in $domainsToRemove) {
 ###
 
 # End the Exchange Session
-Remove-PSSession -Session $Session
+Remove-PSSession -Session $session
