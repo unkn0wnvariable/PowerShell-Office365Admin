@@ -23,9 +23,9 @@ Connect-EXOPSSession
 $exchangeConnectionUri = 'http://' + $exchangeServerFQDN +'/PowerShell/'
 
 # Establish a session to Exchange on-prem and add the OnPrem prefix to all commands
-$UserCredential = Get-Credential
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $exchangeConnectionUri -Authentication Kerberos -Credential $UserCredential
-Import-PSSession $Session -DisableNameChecking -Prefix OnPrem
+$userCredential = Get-Credential
+$session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $exchangeConnectionUri -Authentication Kerberos -Credential $userCredential
+Import-PSSession $session -DisableNameChecking -Prefix OnPrem
 
 # Get list of mailboxes from Exchange online for synced users
 $allOnlineMailboxes = Get-Mailbox -ResultSize Unlimited | Where-Object {$_.IsDirSynced -eq $true -and $_.Name -notlike 'DiscoverySearchMailbox*'}
@@ -59,4 +59,4 @@ Write-Output -InputObject ('The following mailboxes have not been changed becaus
 $mismatchedUPNAliases | Select-Object Name,Alias,UserPrincipalName,PrimarySmtpAddress
 
 # End the Exchange Session
-Remove-PSSession -Session $Session
+Remove-PSSession -Session $session
