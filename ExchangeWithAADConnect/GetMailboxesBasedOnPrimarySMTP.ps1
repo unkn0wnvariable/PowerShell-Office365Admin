@@ -14,9 +14,9 @@ $outputFile = 'C:\Temp\Mailboxes.csv'
 $exchangeConnectionUri = 'http://' + $exchangeServerFQDN +'/PowerShell/'
 
 # Establish a session to Exchange
-$UserCredential = Get-Credential
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $exchangeConnectionUri -Authentication Kerberos -Credential $UserCredential
-Import-PSSession $Session -DisableNameChecking
+$userCredential = Get-Credential
+$session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $exchangeConnectionUri -Authentication Kerberos -Credential $userCredential
+Import-PSSession $session -DisableNameChecking
 
 # Get list of mailboxes
 $allMailboxes = Get-RemoteMailbox -ResultSize Unlimited | Where-Object {($_.PrimarySmtpAddress.Split('@')[1] -eq $primarySMTP)}
@@ -25,4 +25,4 @@ $allMailboxes = Get-RemoteMailbox -ResultSize Unlimited | Where-Object {($_.Prim
 $allMailboxes | Select-Object Name,Alias,UserPrincipalName,PrimarySmtpAddress,EmailAddresses | Export-Csv -Path $outputFile -NoTypeInformation
 
 # End the Exchange Session
-Remove-PSSession -Session $Session
+Remove-PSSession -Session $session
