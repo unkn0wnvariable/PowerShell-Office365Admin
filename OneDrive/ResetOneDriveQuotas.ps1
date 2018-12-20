@@ -19,7 +19,10 @@ $spoBaseWildcard = 'https://' + $orgName + '-my.sharepoint.com/personal/*'
 $defaultQuota = (Get-SPOTenant).OneDriveStorageQuota
 
 # Get a list of all 'personal' sites (e.g.: OneDrive for Business sites) within the tenant
-Get-SPOSite -Limit all -IncludePersonalSite $true | Where-Object {$_.Url -like $spoBaseWildcard -and $_.StorageQuota -lt $defaultQuota} | Set-SPOSite -StorageQuotaReset
+$usersToReset = Get-SPOSite -Limit all -IncludePersonalSite $true | Where-Object {$_.Url -like $spoBaseWildcard -and $_.StorageQuota -lt $defaultQuota}
 
-
-Set-SPOSite -Identity 'https://satelliteinfo-my.sharepoint.com/personal/rcovell_sis_tv' -StorageQuotaReset
+# Get a list of all 'personal' sites (e.g.: OneDrive for Business sites) within the tenant
+foreach ($userToReset in $usersToReset) {
+    Write-Output -InputObject ('Resetting user ' + $userToReset.Owner)
+    Set-SPOSite -Identity $userToReset.Url -StorageQuotaReset
+}
