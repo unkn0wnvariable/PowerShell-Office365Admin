@@ -10,6 +10,8 @@ PowerShell sessions.
 Microsoft have instructions on how to install modules or connect to services here:
 [Connect PowerShell to Office 365 Services](https://support.office.com/en-us/article/Connect-PowerShell-to-Office-365-services-06a743bb-ceb6-49a9-a61d-db4ffdf54fa6)
 
+The SharePoint module can also now be installed directly from PSGallery using `Install-Module -Name Microsoft.Online.SharePoint.PowerShell` in a PowerShell window.
+
 In addition, the services which use remote sessions will require the script execution policy within
 PowerShell to be changed to RemoteSigned. This is done either globally with:
 
