@@ -5,7 +5,7 @@
 
 # The name of your Office 365 organization
 # This can be found in your Sharepoint URL before the '-my', eg: https://thecompany-my.sharepoint.com/
-$orgName=''
+$spoTenantName=''
 
 # The UPN of the account you wish to add as a secondary admin
 $secondaryAdminUPN = ''
@@ -14,12 +14,11 @@ $secondaryAdminUPN = ''
 $userList = @('','')
 
 # Connect to Sharepoint Online
-$spoServiceURL = 'https://' + $orgName + '-admin.sharepoint.com'
-Import-Module 'C:\Program Files\SharePoint Online Management Shell\Microsoft.Online.SharePoint.PowerShell' -DisableNameChecking
-Connect-SPOService -Url $spoServiceURL
+Import-Module Microsoft.Online.SharePoint.PowerShell -DisableNameChecking
+Connect-SPOService -Url ('https://' + $spoTenantName + '-admin.sharepoint.com')
 
 # Create the base URL for OneDrive for Business
-$spoBaseURL = 'https://' + $orgName + '-my.sharepoint.com/personal/'
+$spoBaseURL = 'https://' + $spoTenantName + '-my.sharepoint.com/personal/'
 
 # Add secondary admin to each user in the list
 foreach ($userUPN in $userList) {

@@ -5,17 +5,12 @@
 # E.g.: https://<tenant-name>.sharepoint.com/
 $spoTenantName = ''
 
-# Create the admin URL from the tenant name
-$spoAdminUrl = 'https://' + $spoTenantName + '-admin.sharepoint.com'
-
 # Who are we looking for? (uses a wildcard like comparison)
 $loginNameLike = ''
 
-# Import the SharePoint Online module
+# Connect to Sharepoint Online
 Import-Module Microsoft.Online.SharePoint.PowerShell -DisableNameChecking
-
-# Connect to your SPO service
-Connect-SPOService -Url $spoAdminUrl
+Connect-SPOService -Url ('https://' + $spoTenantName + '-admin.sharepoint.com')
 
 # Get all SharePoint Online sites
 $allSpoSites = Get-SPOSite -Limit All
