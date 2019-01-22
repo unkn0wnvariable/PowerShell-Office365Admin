@@ -18,5 +18,5 @@ $users = Get-MsolUser -All | Where-Object {($_.licenses).AccountSkuId -match $ex
 
 # Add the new licence
 foreach ($user in $users) {
-    Set-MSOLUserLicense –user $user.UserPrincipalName –AddLicenses $licenceToAdd
+    Set-MSOLUserLicense -UserPrincipalName $user.UserPrincipalName –AddLicenses $licenceToAdd
 }
