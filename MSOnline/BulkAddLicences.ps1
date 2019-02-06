@@ -1,6 +1,6 @@
 # Bulk add additional licences to a list of users where they already have a licence assigned.
 #
-# Only works where the user already has a licence assigned as assigning a licence to an unlicenced user is a different process
+# Only works where the user already has a licence assigned as assigning a licence to an unlicenced user is a different process.
 #
 
 # Where is the list of user UPN's?
