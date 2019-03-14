@@ -12,11 +12,15 @@ Import-Module SkypeOnlineConnector
 $sfbSession = New-CsOnlineSession
 Import-PSSession -Session $sfbSession
 
-# At time of creation, this is the name of the audio conferencing licence
-$audioConferencingLicence = 'MCOMEETADV'
+# This can just be the one licence, or several, eg. MCOMEETADV (audio conferencing) and ENTERPRISEPREMIUM (E5) and MEETING_ROOM all include audio conferencing.
+# List of available SKUs can be obtained with (Get-MsolAccountSku).AccountSkuId
+$audioConferencingLicences = @('MCOMEETADV','ENTERPRISEPREMIUM','MEETING_ROOM')
 
-# Find everyone who has the audio conferencing licence assigned
-$users = (Get-MsolUser -All | Where-Object {($_.licenses).AccountSkuId -match $audioConferencingLicence}).UserPrincipalName
+# Find everyone who has the audio conferencing licence(s) assigned
+$users= @()
+foreach ($audioConferencingLicence in $audioConferencingLicences) {
+    $users += (Get-MsolUser -All | Where-Object {($_.licenses).AccountSkuId -match $audioConferencingLicence}).UserPrincipalName
+}
 
 # Get the default service number from your tenant
 $defaultServiceNumber = (Get-CsOnlineDialInConferencingBridge -Name 'Conference Bridge').DefaultServiceNumber
