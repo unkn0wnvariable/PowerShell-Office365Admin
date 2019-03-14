@@ -12,7 +12,7 @@ Import-Module SkypeOnlineConnector
 $sfbSession = New-CsOnlineSession
 Import-PSSession -Session $sfbSession
 
-# This can just be the one licence, or several, eg. MCOMEETADV (audio conferencing) and ENTERPRISEPREMIUM (E5) and MEETING_ROOM all include audio conferencing.
+# This can be just one licence, or several, eg. MCOMEETADV (audio conferencing), ENTERPRISEPREMIUM (E5) and MEETING_ROOM all include audio conferencing.
 # List of available SKUs can be obtained with (Get-MsolAccountSku).AccountSkuId
 $audioConferencingLicences = @('MCOMEETADV','ENTERPRISEPREMIUM','MEETING_ROOM')
 
