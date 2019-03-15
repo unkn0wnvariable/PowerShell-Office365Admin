@@ -16,7 +16,7 @@ $allUserLicences = @()
 foreach ($user in $users) {
     $assignedLicences = @()
     foreach ($license in $user.AssignedLicenses.SkuID) {
-        $assignedLicences += ($allSkus | Where-Object { $_.ObjectId.Split('_')[1] -eq $license }).SkuPartNumber
+        $assignedLicences += ($allSkus | Where-Object { $_.SkuID -eq $license }).SkuPartNumber
     }
     $userLicences = [PSCustomObject]@{
         'UserName' = $user.UserPrincipalName
