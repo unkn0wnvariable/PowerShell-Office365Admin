@@ -20,7 +20,7 @@ foreach ($user in $users) {
     $assignedLicences = @()
     $userDetails = Get-AzureADUser -ObjectId $user
     foreach ($license in $userDetails.AssignedLicenses.SkuID) {
-        $assignedLicences += ($allSkus | Where-Object { $_.ObjectId.Split('_')[1] -eq $license }).SkuPartNumber
+        $assignedLicences += ($allSkus | Where-Object { $_.SkuID -eq $license }).SkuPartNumber
     }
     $userLicences = [PSCustomObject]@{
         'UserName' = $user
