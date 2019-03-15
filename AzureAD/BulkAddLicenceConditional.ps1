@@ -3,6 +3,8 @@
 # An updated version of my previous MSOL script, now using AzureAD.
 # This is useful for something like adding Office 365 ATP to everyone who currently has E3, for example.
 #
+# List of available SKUs can be obtained with (Get-AzureADSubscribedSku).SkuPartNumber
+#
 
 # What licence do the users currently have?
 $existingLicence = 'ENTERPRISEPACK'
