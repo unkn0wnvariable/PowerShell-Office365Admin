@@ -1,4 +1,4 @@
-# Bulk add additional licences to a list of users where they already have a licence assigned.
+# Bulk add additional licences to a list of users.
 #
 # An updated version of my previous MSOL script, now using AzureAD.
 #
