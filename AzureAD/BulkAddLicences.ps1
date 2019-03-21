@@ -24,15 +24,17 @@ $users = Get-AzureADUser -All $true | Where-Object {$_.UserPrincipalName -in $us
 # Get all available licence skus
 $newSkuIDs = (Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -in $licencesToAdd}).SkuId
 
+# Create a licenses object
 $newLicenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
 
+# Add the licences to add to the licences object
 foreach ($newSkuID in $newSkuIDs) {
     $newLicense = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
     $newLicense.SkuId = $newSkuID
     $newLicenses.AddLicenses += $newLicense
 }
 
-# Add the new licence
+# Add the new licenses
 foreach ($user in $users) {
     if ($user.AccountEnabled -eq $true) {
         Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $newLicenses
