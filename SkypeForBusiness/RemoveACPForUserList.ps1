@@ -1,4 +1,4 @@
-# Script to bulk remove 3rd party conferencing details for all users
+# Script to bulk remove conferencing details for a list of users
 #
 
 # Where is the list of user UPN's?
