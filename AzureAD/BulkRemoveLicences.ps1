@@ -22,19 +22,21 @@ $users = Get-AzureADUser -All $true | Where-Object {$_.UserPrincipalName -in $us
 # Get all available licence skus
 $skuIDs = (Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -in $licencesToRemove}).SkuId
 
+# Create a licenses object
 $licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
 
+# Add the licences to remove to the licences object
 foreach ($skuID in $skuIDs) {
     $license = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
     $license.SkuId = $skuID
     $licenses.RemoveLicenses += $license
 }
 
-# Add the new licence
+# Remove the licenses
 foreach ($user in $users) {
     if ($user.AccountEnabled -eq $true) {
         Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses
-        Write-Output -InputObject ('Licence remove to user account ' + $user.UserPrincipalName + '.')
+        Write-Output -InputObject ('Licence remove from user account ' + $user.UserPrincipalName + '.')
     }
     else {
         Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
