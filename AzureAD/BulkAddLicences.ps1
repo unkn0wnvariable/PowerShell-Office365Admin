@@ -35,7 +35,7 @@ foreach ($newSkuID in $newSkuIDs) {
 # Add the new licence
 foreach ($user in $users) {
     if ($user.AccountEnabled -eq $true) {
-        #Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $newLicenses
+        Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $newLicenses
         Write-Output -InputObject ('Licence added to user account ' + $user.UserPrincipalName + '.')
     }
     else {
