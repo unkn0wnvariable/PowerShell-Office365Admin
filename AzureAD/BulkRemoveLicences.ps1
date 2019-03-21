@@ -1,6 +1,4 @@
-# Bulk remove licences to a list of users where they already have a licence assigned.
-#
-# An updated version of my previous MSOL script, now using AzureAD.
+# Bulk remove licences to a list of users.
 #
 # List of available SKUs can be obtained with (Get-AzureADSubscribedSku).SkuPartNumber
 #
@@ -9,7 +7,7 @@
 $userListPath = 'C:\Temp\UserList.txt'
 
 # What licences are we removing?
-$licencesToAdd = @('MCOMEETADV')
+$licencesToRemove = @('MCOMEETADV')
 
 # Import MSOnline module and connect
 Import-Module AzureAD
@@ -22,21 +20,21 @@ $userList = Get-Content -Path $userListPath | Sort-Object
 $users = Get-AzureADUser -All $true | Where-Object {$_.UserPrincipalName -in $userList}
 
 # Get all available licence skus
-$newSkuIDs = (Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -in $licencesToAdd}).SkuId
+$skuIDs = (Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -in $licencesToRemove}).SkuId
 
-$newLicenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+$licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
 
-foreach ($newSkuID in $newSkuIDs) {
-    $newLicense = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
-    $newLicense.SkuId = $newSkuID
-    $newLicenses.RemoveLicenses += $newLicense
+foreach ($skuID in $skuIDs) {
+    $license = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+    $license.SkuId = $skuID
+    $licenses.RemoveLicenses += $license
 }
 
 # Add the new licence
 foreach ($user in $users) {
     if ($user.AccountEnabled -eq $true) {
-        Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $newLicenses
-        Write-Output -InputObject ('Licence added to user account ' + $user.UserPrincipalName + '.')
+        Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses
+        Write-Output -InputObject ('Licence remove to user account ' + $user.UserPrincipalName + '.')
     }
     else {
         Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
