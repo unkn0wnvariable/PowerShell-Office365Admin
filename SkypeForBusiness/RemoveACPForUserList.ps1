@@ -14,9 +14,12 @@ Import-PSSession -Session $sfbSession -AllowClobber
 # Import list of users from file
 $userList = Get-Content -Path $userListPath | Sort-Object
 
+# Get CS Online user identities for all the users in the list
+$csOnlineUsers = (Get-CsOnlineUser -WarningAction SilentlyContinue | Where-Object {$_.UserPrincipalName -in $userList}).Identity
+
 # Run through the users and remove their ACP info
-foreach ($user in $userList) {
-    Remove-CsUserAcp -Identity $user
+foreach ($csOnlineUser in $csOnlineUsers) {
+    Remove-CsUserAcp -Identity $csOnlineUser
 }
 
 # End the PS Session
