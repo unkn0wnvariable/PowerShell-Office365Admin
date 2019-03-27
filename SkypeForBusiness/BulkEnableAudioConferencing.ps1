@@ -17,7 +17,7 @@ Import-PSSession -Session $sfbSession
 $audioConferencingLicences = @('MCOMEETADV','ENTERPRISEPREMIUM','MEETING_ROOM')
 
 # Find everyone who has the audio conferencing licence(s) assigned
-$users= @()
+$users = @()
 foreach ($audioConferencingLicence in $audioConferencingLicences) {
     $users += (Get-MsolUser -All | Where-Object {($_.licenses).AccountSkuId -match $audioConferencingLicence}).UserPrincipalName
 }
