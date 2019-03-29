@@ -18,9 +18,6 @@ Connect-AzureAD
 # Import list of users from file
 $userList = Get-Content -Path $userListPath | Sort-Object
 
-# Get user details from AzureAD
-$users = Get-AzureADUser -All $true | Where-Object {$_.UserPrincipalName -in $userList}
-
 # Get all available licence skus
 $newSkuIDs = (Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -in $licencesToAdd}).SkuId
 
@@ -35,7 +32,8 @@ foreach ($newSkuID in $newSkuIDs) {
 }
 
 # Add the new licenses
-foreach ($user in $users) {
+foreach ($username in $userList) {
+    $user = Get-AzureADUser -ObjectId $username
     if ($user.AccountEnabled -eq $true) {
         Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $newLicenses
         Write-Output -InputObject ('Licence added to user account ' + $user.UserPrincipalName + '.')
