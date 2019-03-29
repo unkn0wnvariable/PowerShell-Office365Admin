@@ -18,7 +18,7 @@ $acpInfoWildcard = '*BT*'
 $outputFile = 'C:\Temp\ConferencingUsers.csv'
 
 # Get all conferencing users matching the above wildcarded info
-$conferencingUsers = Get-CsOnlineUser -WarningAction:SilentlyContinue -ErrorAction:SilentlyContinue | Where-Object {($_.Company -like $companyWildcard) -and ($_.AcpInfo -like $acpInfoWildcard) -and ($_.Enabled -eq $true)} | Select-Object DisplayName,Alias,AcpInfo
+$conferencingUsers = Get-CsOnlineUser -WarningAction:SilentlyContinue -ErrorAction:SilentlyContinue | Where-Object {($_.Company -like $companyWildcard) -and ($_.AcpInfo -like $acpInfoWildcard) -and ($_.Enabled -eq $true)} | Select-Object DisplayName,UserPrincipalName,AcpInfo
 
 # Set up user details hash table
 $userDetails = @()
@@ -57,6 +57,7 @@ foreach ($conferencingUser in $conferencingUsers) {
     
     $userDetails += [PSCustomObject]@{
         'DisplayName' = [string]$conferencingUser.DisplayName
+        'UserPrincipalName' = [string]$conferencingUser.UserPrincipalName
         'TollNumber' = [string]$tollNumber
         'TollFreeNumber' = [string]$tollFreeNumber
         'ParticipantPassCode' = [string]$participantPassCode
