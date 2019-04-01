@@ -27,13 +27,18 @@ $licenses.RemoveLicenses = (Get-AzureADSubscribedSku | Where-Object {$_.SkuPartN
 
 # Remove the licenses
 foreach ($username in $userList) {
-    $user = Get-AzureADUser -ObjectId $username
-    if ($user.AccountEnabled -eq $true) {
-        Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses
-        Write-Output -InputObject ('Licence remove from user account ' + $user.UserPrincipalName + '.')
+    try {
+        $user = Get-AzureADUser -ObjectId $username -ErrorAction Stop
+        if ($user.AccountEnabled -eq $true) {
+            Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses
+            Write-Output -InputObject ('Licence remove from user account ' + $user.UserPrincipalName + '.')
+        }
+        else {
+            Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
+        }
     }
-    else {
-        Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
+    catch {
+        Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' does not exist.')
     }
 }
 
