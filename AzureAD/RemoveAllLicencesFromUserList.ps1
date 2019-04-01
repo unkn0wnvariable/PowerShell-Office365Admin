@@ -16,15 +16,25 @@ $userList = Get-Content -Path $userListPath | Sort-Object
 
 # Remove all the licences
 foreach ($username in $userList) {
-    $user = Get-AzureADUser -ObjectId $username
-    if ($user.AccountEnabled -eq $true) {
-        $licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
-        $licenses.RemoveLicenses = (Get-AzureADSubscribedSku | Where-Object {$_.SkuId -in $user.AssignedLicenses.SkuId}).SkuId
-        Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses
-        Write-Output -InputObject ('All licences removed from user account ' + $user.UserPrincipalName + '.')
+    try {
+        $user = Get-AzureADUser -ObjectId $username -ErrorAction Stop
+        if ($user.AccountEnabled -eq $true) {
+            if(($user.AssignedLicenses.SkuId).Count -ge 1) {
+                $licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+                $licenses.RemoveLicenses = (Get-AzureADSubscribedSku | Where-Object {$_.SkuId -in $user.AssignedLicenses.SkuId}).SkuId
+                Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses
+                Write-Output -InputObject ('All licences removed from user account ' + $username + '.')
+            }
+            else {
+                Write-Output -InputObject ('User account ' + $username + ' has no licences assigned.')
+            }
+        }
+        else {
+            Write-Output -InputObject ('User account ' + $username + ' is disabled.')
+        }
     }
-    else {
-        Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
+    catch {
+        Write-Output -InputObject ('User account ' + $username + ' does not exist.')
     }
 }
 
