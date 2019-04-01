@@ -8,16 +8,19 @@ Import-Module SkypeOnlineConnector
 $sfbSession = New-CsOnlineSession
 Import-PSSession -Session $sfbSession -AllowClobber
 
+# Company Wildcard
+$companyWildcard = '*'
+
 # AcpInfo to match (doesn't need to be the full name)
-$acpName = 'BT Conferencing UK_EMEA'
+$acpInfoWildcard = '*BT*'
 
 # Get all conferencing users matching the above info
-$thirdPartyAcps = Get-CsUserAcp | Where-Object {$_.AcpInfo -match $acpName}
+$thirdPartyAcpUsers = Get-CsOnlineUser -WarningAction:SilentlyContinue -ErrorAction:SilentlyContinue | Where-Object {($_.Company -like $companyWildcard) -and ($_.AcpInfo -like $acpInfoWildcard) -and ($_.Enabled -eq $true)}
 
 # Run through the users and remove their ACP info
-foreach ($thirdPartyUser in $thirdPartyAcps) {
-    $acpInfoName = ([xml]$thirdPartyUser.AcpInfo).acpInformation.name
-    Remove-CsUserAcp -Identity $thirdPartyUser.Identity -Name $acpInfoName -WhatIf
+foreach ($thirdPartyAcpUser in $thirdPartyAcpUsers) {
+    $acpInfoName = ([xml]$thirdPartyAcpUser.AcpInfo).acpInformation.name
+    Remove-CsUserAcp -Identity $thirdPartyAcpUser.Identity -Name $acpInfoName
 }
 
 # End the PS Session
