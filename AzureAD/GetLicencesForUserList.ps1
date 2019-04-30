@@ -18,9 +18,14 @@ $users = Get-Content -Path $userListPath | Sort-Object
 $allUserLicences = @()
 foreach ($user in $users) {
     $assignedLicences = @()
-    $userDetails = Get-AzureADUser -ObjectId $user
-    foreach ($license in $userDetails.AssignedLicenses.SkuID) {
-        $assignedLicences += ($allSkus | Where-Object { $_.SkuID -eq $license }).SkuPartNumber
+    try {
+        $userDetails = Get-AzureADUser -ObjectId $user -ErrorAction Stop
+        foreach ($license in $userDetails.AssignedLicenses.SkuID) {
+            $assignedLicences += ($allSkus | Where-Object { $_.SkuID -eq $license }).SkuPartNumber
+        }
+    }
+    catch {
+        $assignedLicences = 'User not found.'
     }
     $userLicences = [PSCustomObject]@{
         'UserName' = $user
@@ -30,4 +35,4 @@ foreach ($user in $users) {
 }
 
 # Export list to CSV file
-$allUserLicences | Export-Csv -Path 'C:\Temp\UserLicences.csv'
+$allUserLicences | Export-Csv -Path 'C:\Temp\UserLicences.csv' -NoTypeInformation
