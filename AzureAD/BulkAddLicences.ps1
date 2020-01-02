@@ -9,9 +9,9 @@
 $userListPath = 'C:\Temp\UserList.txt'
 
 # What licences are we adding?
-$licencesToAdd = @('MCOMEETADV')
+$licencesToAdd = @('ENTERPRISEPACK','ATP_ENTERPRISE','EMSPREMIUM')
 
-# Import MSOnline module and connect
+# Import AzureAD module and connect
 Import-Module AzureAD
 Connect-AzureAD
 
@@ -22,24 +22,30 @@ $userList = Get-Content -Path $userListPath | Sort-Object
 $newSkuIDs = (Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -in $licencesToAdd}).SkuId
 
 # Create a licenses object
-$newLicenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+$licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
 
 # Add the licences to add to the licences object
 foreach ($newSkuID in $newSkuIDs) {
     $newLicense = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
     $newLicense.SkuId = $newSkuID
-    $newLicenses.AddLicenses += $newLicense
+    $licenses.AddLicenses += $newLicense
 }
 
-# Add the new licenses
+# Add the licenses
 foreach ($username in $userList) {
-    $user = Get-AzureADUser -ObjectId $username
-    if ($user.AccountEnabled -eq $true) {
-        Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $newLicenses
-        Write-Output -InputObject ('Licence added to user account ' + $user.UserPrincipalName + '.')
+    try {
+        $user = Get-AzureADUser -ObjectId $username -ErrorAction Stop
+        if ($user.AccountEnabled -eq $true) {
+            Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses -ErrorAction Stop
+            Write-Output -InputObject ('Licence(s) added for user account ' + $user.UserPrincipalName + '.')
+        }
+        else {
+            Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
+        }
     }
-    else {
-        Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
+    catch {
+        Write-Output -InputObject ('There was a problem updating licences for user account ' + $user.UserPrincipalName + '.')
+        Write-Output -InputObject $Error[0]
     }
 }
 

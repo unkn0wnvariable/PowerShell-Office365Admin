@@ -7,7 +7,7 @@
 # Where is the list of user UPN's?
 $userListPath = 'C:\Temp\UserList.txt'
 
-# Import MSOnline module and connect
+# Import AzureAD module and connect
 Import-Module AzureAD
 Connect-AzureAD
 

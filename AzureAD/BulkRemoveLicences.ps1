@@ -2,17 +2,14 @@
 #
 # List of available SKUs can be obtained with (Get-AzureADSubscribedSku).SkuPartNumber
 #
-# Removing licences with this module doesn't work in the way that Microsoft's documentation states.
-# I'm assuming this is a bug, so the code below works at time of creation but may stop working in the future.
-#
 
 # Where is the list of user UPN's?
 $userListPath = 'C:\Temp\UserList.txt'
 
 # What licences are we removing?
-$licencesToRemove = @('MCOMEETADV')
+$licencesToRemove = @('ENTERPRISEPACK','ATP_ENTERPRISE','EMSPREMIUM')
 
-# Import MSOnline module and connect
+# Import AzureAD module and connect
 Import-Module AzureAD
 Connect-AzureAD
 
@@ -31,14 +28,15 @@ foreach ($username in $userList) {
         $user = Get-AzureADUser -ObjectId $username -ErrorAction Stop
         if ($user.AccountEnabled -eq $true) {
             Set-AzureADUserLicense -ObjectId $user.UserPrincipalName -AssignedLicenses $licenses
-            Write-Output -InputObject ('Licence remove from user account ' + $user.UserPrincipalName + '.')
+            Write-Output -InputObject ('Licence(s) removed from user account ' + $user.UserPrincipalName + '.')
         }
         else {
             Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' is disabled.')
         }
     }
     catch {
-        Write-Output -InputObject ('User account ' + $user.UserPrincipalName + ' does not exist.')
+        Write-Output -InputObject ('There was a problem updating licences for user account ' + $user.UserPrincipalName + '.')
+        Write-Output -InputObject $Error[0]
     }
 }
 

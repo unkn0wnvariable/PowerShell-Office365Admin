@@ -12,7 +12,7 @@ $existingLicence = 'ENTERPRISEPACK'
 # What licence are we adding?
 $licenceToAdd = 'ATP_ENTERPRISE'
 
-# Import MSOnline module and connect
+# Import AzureAD module and connect
 Import-Module AzureAD
 Connect-AzureAD
 
