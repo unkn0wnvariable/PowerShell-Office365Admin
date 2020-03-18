@@ -25,7 +25,7 @@ $existingSkuID = ($allSkus | Where-Object {$_.SkuPartNumber -eq $existingLicence
 # Get sku ID for new licence
 $newSkuID = ($allSkus | Where-Object {$_.SkuPartNumber -eq $licenceToAdd}).SkuId
 
-# Find everyone who has the existing licence
+# Find everyone who has the existing licence but not the licence we're adding
 $users = Get-AzureADUser -All $true | Where-Object {$_.AssignedLicenses.SkuId -match $existingSkuID -and !($_.AssignedLicenses.SkuId -match $newSkuID)}
 
 # Create a new licence object for the licence we're adding
