@@ -20,5 +20,10 @@ else {
 }
 
 # Disable the guest accounts
-$guestAccounts | Set-AzureADUser -AccountEnabled $false
-Write-Output -InputObject ('The specified guest accounts have been disabled.')
+try {
+    $guestAccounts | Set-AzureADUser -AccountEnabled $false -ErrorAction Stop
+    Write-Output -InputObject ('The specified guest accounts have been disabled.')
+}
+catch {
+    Write-Output -InputObject ('Failed - The specified guest accounts have not been disabled.')
+}
