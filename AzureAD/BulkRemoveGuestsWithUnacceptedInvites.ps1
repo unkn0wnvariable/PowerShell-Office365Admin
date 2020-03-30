@@ -2,7 +2,7 @@
 #
 
 # How many days are we allowing for invites to be accepted? (This can be 0 for all)
-$cutOffDays = 0
+$cutOffDays = 30
 
 # Install the AzureAD module, uncomment if required
 #Install-Module -Name AzureAD
