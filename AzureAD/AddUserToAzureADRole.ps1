@@ -1,11 +1,14 @@
 ﻿# Script to add user to an AzureAD role
-#
-# You can find a list of available roles in the following Microsoft article
-# https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal
-#
-# Built from the code example on the following Mircosoft page
-# https://docs.microsoft.com/en-us/powershell/module/azuread/add-azureaddirectoryrolemember?view=azureadps-2.0
-#
+
+<#
+You can find a list of available roles in the following Microsoft article
+https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal
+Double check using Get-AzureADDirectoryRole as they don't always have the same name in PowerShell as the GUI
+
+Built from the code example on the following Mircosoft page
+https://docs.microsoft.com/en-us/powershell/module/azuread/add-azureaddirectoryrolemember?view=azureadps-2.0
+#>
+
 
 # User UPN to assign role to
 $roleUser = ''
