@@ -1,9 +1,8 @@
 # ScheduledBitLockerKeyBackup.ps1
 
-##### WORK IN PROGRESS #####
-
 <#
-Creates a locally saves PS script to get the bitlocker key and save it to Azure.
+Script intended for deployment through Intune:
+Creates a locally saved PS script to get the bitlocker key and save it to Azure.
 Then creates a scheduled task to run that script at every logon.
 #>
 
@@ -21,22 +20,19 @@ if (!(Test-Path -Path $scriptFolder)) {
 
 $scriptContents = @(
     '$recoveryPassword = ((Get-BitlockerVolume -MountPoint $env:SystemDrive).KeyProtector | Where-Object { $_.KeyProtectorType -eq "RecoveryPassword" })'
-    '$null = BackupToAAD-BitLockerKeyProtector $env:systemdrive -KeyProtectorId $recoveryPassword.KeyProtectorID'
+    'BackupToAAD-BitLockerKeyProtector $env:systemdrive -KeyProtectorId $recoveryPassword.KeyProtectorId'
 )
 
 Out-File -InputObject $scriptContents -FilePath $scriptPath
 
 $taskAction = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $scriptPath -WorkingDirectory $scriptFolder
-$taskTrigger = New-ScheduledTaskTrigger -AtLogOn
+$taskTrigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek 'Monday' -At '12:00:00' -RandomDelay '00:20:00'
 $taskPrincipal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType 'ServiceAccount' -RunLevel 'Highest'
 $taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -Compatibility 'Win8' -Hidden -StartWhenAvailable
 
-$existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction Stop
-
-if ($existingTask) {
+if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
     Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
 }
 
 Register-ScheduledTask -Action $taskAction -Trigger $taskTrigger -TaskName $taskName -Description $taskDescription -Principal $taskPrincipal -Settings $taskSettings
-
 Start-ScheduledTask -TaskName $taskName
