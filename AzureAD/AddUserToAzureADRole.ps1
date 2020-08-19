@@ -24,16 +24,16 @@ Connect-AzureAD
 # Fetch user to assign to role
 $roleMember = Get-AzureADUser -ObjectId $roleUser
 
-# Fetch User Account Administrator role instance
+# Fetch role instance
 $role = Get-AzureADDirectoryRole | Where-Object {$_.displayName -eq $roleName}
 
 # If role instance does not exist, instantiate it based on the role template
-if ($role -eq $null) {
+if (!($role)) {
     # Instantiate an instance of the role template
     $roleTemplate = Get-AzureADDirectoryRoleTemplate | Where-Object {$_.displayName -eq $roleName}
     Enable-AzureADDirectoryRole -RoleTemplateId $roleTemplate.ObjectId
 
-    # Fetch User Account Administrator role instance again
+    # Fetch role instance again
     $role = Get-AzureADDirectoryRole | Where-Object {$_.displayName -eq $roleName}
 }
 
