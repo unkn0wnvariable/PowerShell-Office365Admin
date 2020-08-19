@@ -32,7 +32,7 @@ foreach ($roleUser in $roleUsers) {
         $role = Get-AzureADDirectoryRole | Where-Object { $_.displayName -eq $roleName }
 
         # If role instance does not exist, instantiate it based on the role template
-        if ($role -eq $null) {
+        if (!($role)) {
             # Instantiate an instance of the role template
             $roleTemplate = Get-AzureADDirectoryRoleTemplate | Where-Object { $_.displayName -eq $roleName }
             Enable-AzureADDirectoryRole -RoleTemplateId $roleTemplate.ObjectId
@@ -54,5 +54,5 @@ foreach ($roleUser in $roleUsers) {
 # Uncomment to fetch role membership for each role to confirm
 #foreach ($roleName in $roleNames) {
 #    Write-Output -InputObject ('Members for role: ' + $roleName)
-#    Get-AzureADDirectoryRoleMember -ObjectId $role.ObjectId | Get-AzureADUser | Where-Object {$_.UserPrincipalName -in $roleUsers}
+#    Get-AzureADDirectoryRoleMember -ObjectId $role.ObjectId | Get-AzureADUser | Where-Object {$_.UserPrincipalName -in $roleUsers} | Format-List -Property DisplayName,UserPrincipalName
 #}
