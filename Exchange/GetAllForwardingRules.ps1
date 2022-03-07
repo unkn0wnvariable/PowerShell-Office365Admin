@@ -4,23 +4,16 @@
 #
 
 # Establish a session to Exchange Online
-$credentials = Get-Credential -Message 'Enter your Exchange Online administrator credentials'
-$connectionParams = @{
-    'ConfigurationName' = 'Microsoft.Exchange';
-    'ConnectionUri' = 'https://outlook.office365.com/powershell-liveid/';
-    'Credential' = $credentials;
-    'Authentication' = 'Basic';
-    'AllowRedirection' = $true
-} 
-$exchangeSession = New-PSSession @connectionParams
-Import-PSSession -Session $exchangeSession
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
-$allUsers = @()
+# Get All mailboxes
 $allUsers = Get-Mailbox -ResultSize Unlimited | Select-Object DisplayName,UserPrincipalName,ForwardingAddress,ForwardingSMTPAddress,DeliverToMailboxandForward
 
 $userInboxRules = @()
 $userDelegates = @()
 
+# Run through the mailboxes getting rules and delegate settings
 foreach ($user in $allUsers) {
     Write-Progress -Activity "Checking inbox rules for..." -status $user.UserPrincipalName -percentComplete ($allUsers.IndexOf($user) / $allUsers.Count * 100)
     $userInboxRules += Get-InboxRule -Mailbox $user.UserPrincipalName | `
@@ -29,10 +22,13 @@ foreach ($user in $allUsers) {
     $userDelegates += Get-MailboxPermission -Identity $user.UserPrincipalName | Where-Object {($_.IsInherited -ne "True") -and ($_.User -notlike "*SELF*")}
 }
 
+# Get all SMTP forwarding rules for all mailboxes
 $smtpForwarding = $allUsers | Select-Object DisplayName,ForwardingAddress,ForwardingSMTPAddress,DeliverToMailboxandForward | Where-Object {$_.ForwardingSMTPAddress -ne $null}
 
+# Output results to CSV files
 $userInboxRules | Export-Csv MailForwardingRulesToExternalDomains.csv -NoTypeInformation
 $smtpForwarding | Export-Csv Mailboxsmtpforwarding.csv -NoTypeInformation
 $userDelegates | Export-Csv MailboxDelegatePermissions.csv -NoTypeInformation
 
-Remove-PSSession -Session $exchangeSession
+# Disconnect from Exchange Online
+Disconnect-ExchangeOnline

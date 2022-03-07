@@ -11,16 +11,8 @@ $grantRightsToUsers = @('','')
 $accessRights = 'Editor'
 
 # Establish a session to Exchange Online
-$credentials = Get-Credential -Message 'Enter your Exchange Online administrator credentials'
-$connectionParams = @{
-    'ConfigurationName' = 'Microsoft.Exchange';
-    'ConnectionUri' = 'https://outlook.office365.com/powershell-liveid/';
-    'Credential' = $credentials;
-    'Authentication' = 'Basic';
-    'AllowRedirection' = $true
-} 
-$exchangeSession = New-PSSession @connectionParams
-Import-PSSession -Session $exchangeSession
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
 # Apply the permissions
 foreach ($grantRightsToUser in $grantRightsToUsers ) {
@@ -37,5 +29,5 @@ foreach ($grantRightsToUser in $grantRightsToUsers ) {
     }
 }
 
-# End the PowerShell session
-Remove-PSSession -Session $exchangeSession
+# Disconnect from Exchange Online
+Disconnect-ExchangeOnline
