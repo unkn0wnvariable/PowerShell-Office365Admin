@@ -1,6 +1,10 @@
 # Retrieve licences for all users and export to CSV.
 #
 
+# Output file path and name
+$outputFilePath = 'C:\Temp\'
+$outputFileName = 'AllUserLicences.csv'
+
 # Import AzureAD module and connect
 Import-Module AzureAD
 Connect-AzureAD
@@ -26,4 +30,5 @@ foreach ($user in $users) {
 }
 
 # Export list to CSV file
-$allUserLicences | Export-Csv -Path 'C:\Temp\AllUserLicences.csv' -NoTypeInformation
+$outputFile = $outputFilePath + $outputFileName
+$allUserLicences | Export-Csv -Path $outputFile -NoTypeInformation
