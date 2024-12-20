@@ -25,7 +25,6 @@ foreach ($grantRightsToUser in $grantRightsToUsers ) {
         else {
             Set-MailboxFolderPermission -Identity $calendarIdentity -User $grantRightsToUser -AccessRights $accessRights
         }
-        Set-Mailbox -Identity $upn –GrantSendOnBehalfTo @{add=$editor}
     }
 }
 
