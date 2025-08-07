@@ -3,12 +3,9 @@
 # This is a rewrite of a script from https://github.com/OfficeDev/O365-InvestigationTooling
 #
 
-# Find and load the new ExO "module"
-$exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
-. "$exoModulePath\CreateExoPSSession.ps1"
-
-# Establish a session to Exchange Online
-Connect-EXOPSSession
+# Import module and connect to Exchange Online
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
 # Set Auditing parameters
 $params = @{
@@ -25,5 +22,5 @@ Get-Mailbox -ResultSize Unlimited | Where-Object {$_.RecipientTypeDetails -match
 # Check Auditing
 Get-Mailbox -ResultSize Unlimited | Where-Object {$_.RecipientTypeDetails -match '(User|Shared|Room|Discovery)Mailbox'} | Format-Table -AutoSize UserPrincipalName,RecipientTypeDetails,AuditEnabled,AuditLogAgeLimit
 
-# End the Exchange Session
-Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession
+# Disconnect from Exchange Online
+Disconnect-ExchangeOnline

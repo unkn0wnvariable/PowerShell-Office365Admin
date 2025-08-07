@@ -4,12 +4,9 @@
 # Which domains are we removing?
 $domainsToRemove = @('','')
 
-# Find and load the new ExO "module"
-$exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
-. "$exoModulePath\CreateExoPSSession.ps1"
-
-# Establish a session to Exchange Online
-Connect-EXOPSSession
+# Import module and connect to Exchange Online
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
 ### Remove the domain from mailboxes ###
 
@@ -87,5 +84,5 @@ foreach ($publicFolder in $allPublicFolders) {
 
 ###
 
-# End the Exchange Session
-Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession
+# Disconnect from Exchange Online
+Disconnect-ExchangeOnline

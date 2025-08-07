@@ -1,7 +1,5 @@
 # Get the permissions and sendas rights for a list of mailboxes and output them to CSV
 #
-# Uses the new PowerShell "module" that support MFA.
-#
 
 # Where to save the CSV files to
 $outputPath = 'C:\Temp\MailboxPermissions\'
@@ -9,12 +7,9 @@ $outputPath = 'C:\Temp\MailboxPermissions\'
 # What mailboxes are we checking?
 $mailboxes = Get-Content -Path 'C:\Temp\Mailboxes.txt'
 
-# Find and load the new ExO "module"
-$exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
-. "$exoModulePath\CreateExoPSSession.ps1"
-
-# Establish a session to Exchange Online
-Connect-EXOPSSession
+# Import module and connect to Exchange Online
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
 # Get all non-inherited mailbox permissions excluding self and output to a CSV file named for each mailbox
 foreach ($mailbox in $mailboxes) {
@@ -36,5 +31,5 @@ foreach ($mailbox in $mailboxes) {
     }
 }
 
-# End the Exchange Session
-Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession
+# Disconnect from Exchange Online
+Disconnect-ExchangeOnline

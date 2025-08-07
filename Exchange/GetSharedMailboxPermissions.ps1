@@ -1,7 +1,5 @@
 # Find shared mailboxes on the basis of their email domain and lists of who has access to them
 #
-# Uses the new PowerShell "module" that support MFA.
-#
 
 # Where to save the CSV files to
 $outputPath = 'C:\Temp\'
@@ -9,12 +7,9 @@ $outputPath = 'C:\Temp\'
 # Wildcard for mailboxes to find
 $searchWildcard = '*'
 
-# Find and load the new ExO "module"
-$exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
-. "$exoModulePath\CreateExoPSSession.ps1"
-
-# Establish a session to Exchange Online
-Connect-EXOPSSession
+# Import module and connect to Exchange Online
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
 # Get all the mailboxes we're looking for
 $sharedMailboxes = Get-Mailbox -RecipientTypeDetails SharedMailbox -ResultSize Unlimited | Where-Object {$_.PrimarySmtpAddress -like $searchWildcard} | Select-Object Name,Alias,PrimarySmtpAddress,ProhibitSendQuota
@@ -28,5 +23,5 @@ foreach ($sharedMailbox in $sharedMailboxes) {
     $mailboxPermissions | Export-CSV -Path ($outputPath + $sharedMailbox.Name + '.csv') -NoTypeInformation
 }
 
-# End the Exchange Session
-Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession
+# Disconnect from Exchange Online
+Disconnect-ExchangeOnline

@@ -1,7 +1,5 @@
 # Create and set up a room mailbox.
 #
-# Uses the new PowerShell "module" that support MFA.
-#
 
 # New room name and alias
 $displayName = ''
@@ -19,12 +17,9 @@ $addToRoomList = $true
 # What is the room list called? (Will be created if it doesn't exist)
 $roomList = ''
 
-# Find and load the new ExO "module"
-$exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
-. "$exoModulePath\CreateExoPSSession.ps1"
-
-# Establish a session to Exchange Online
-Connect-EXOPSSession
+# Import module and connect to Exchange Online
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
 # Create the new room mailbox
 New-Mailbox -Room -Alias $mailboxAlias -Name $displayName -DisplayName $displayName -ResourceCapacity $roomCapacity
@@ -48,5 +43,5 @@ if ($addToRoomList) {
     Add-DistributionGroupMember -Identity $roomList -Member $mailboxAlias
 }
 
-# End the Exchange Session
-Get-PSSession | Where-Object {$_.ComputerName -eq 'outlook.office365.com'} | Remove-PSSession
+# Disconnect from Exchange Online
+Disconnect-ExchangeOnline
