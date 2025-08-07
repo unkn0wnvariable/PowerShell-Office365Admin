@@ -12,12 +12,9 @@ $exchangeServerFQDN = ''
 # What is your remote routing address? E.g.: @domain.mail.onmicrosoft.com
 $remoteRoutingSuffix = '@domain.mail.onmicrosoft.com'
 
-# Find and load the new ExO "module"
-$exoModulePath = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -Force -ErrorAction SilentlyContinue).DirectoryName[-1]
-. "$exoModulePath\CreateExoPSSession.ps1"
-
 # Establish a session to Exchange Online
-Connect-EXOPSSession
+Import-Module -Name ExchangeOnlineManagement
+Connect-ExchangeOnline
 
 # Create Exchange on-prem connection Uri from FQDN
 $exchangeConnectionUri = 'http://' + $exchangeServerFQDN +'/PowerShell/'
