@@ -15,9 +15,6 @@ Connect-SPOService -Url ('https://' + $spoTenantName + '-admin.sharepoint.com')
 # Get all SharePoint Online sites
 $allSpoSites = Get-SPOSite -Limit All | Where-Object {$_.Title -like $siteNameLike}
 
-Get-SpoSiteGroup
-
-
 # Run through the sites...
 foreach ($spoSite in $allSpoSites) {
     # Try to get a list of users for the current site - requires owner access to the site.
@@ -28,6 +25,4 @@ foreach ($spoSite in $allSpoSites) {
     }
 }
 
-$spoUsers | Export-Csv C:\Temp\SISLive-Sharepoint-Site.csv -NoTypeInformation
-
-$allSpoSites
+$spoUsers | Export-Csv -Path 'C:\Temp\SharePointSites.csv' -NoTypeInformation
